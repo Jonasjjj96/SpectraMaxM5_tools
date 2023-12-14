@@ -1,0 +1,52 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Dec  5 16:24:31 2023
+
+@author: Jonas Heinicke
+"""
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+def load_csv(file_name, seperator, header = 0):
+    data = pd.read_csv(file_name, sep = seperator, header = 0, encoding='utf-16le',engine='python')
+    data = data.dropna(axis='columns')
+    data = data.drop(labels="Temperature(¡C)", axis='columns')
+    return data
+
+def time_conversion(df):
+    df.loc[:, df.columns != "Time"] = df.loc[:, df.columns != "Time"].replace(',','.',regex=True) # Replacing , with .
+    df.loc[:, df.columns != "Time"] = df.loc[:, df.columns != "Time"].astype(float) # Converting the data type
+    for i in range(len(df["Time"])):
+        raw_time = df.iloc[i,0]
+        h,m,s = raw_time.split(":")
+        new_time = int(h)*60 + int(m) + int(s)/60
+        df.iloc[i,0] = new_time
+    return df    
+    
+
+def rename_columns(dataF):
+    new_column_names = {}
+    for column_names in dataF.loc[:, dataF.columns != "Time"]:
+        new_column_names[column_names] = input(f"Input the name for the well {column_names}: ")
+    dataF.rename(columns = new_column_names,inplace=True)
+    return dataF
+
+df = load_csv('X:/Inhibitor_DUBs/2023-12-04_USP48_MonoUb_InhibNem_17e100uM.txt', '\t')
+time_conversion(df)
+
+#rename_columns(df)
+
+
+
+figure = df.plot(kind="line",x = "Time",title="Test", fontsize = 10,
+                 xticks=(0,30,60,90,120), figsize = (10,6), 
+                 xlim = (0,120), xlabel = "Time / min",
+                 ylabel = "Fluoresence / RFUs")
+plt.show()
+
+
+
+  
+    
+    
