@@ -24,7 +24,6 @@ def time_conversion(df):
         df.iloc[i,0] = new_time
     return df    
     
-
 def rename_columns(dataF):
     new_column_names = {}
     for column_names in dataF.loc[:, dataF.columns != "Time"]:
@@ -32,18 +31,17 @@ def rename_columns(dataF):
     dataF.rename(columns = new_column_names,inplace=True)
     return dataF
 
-df = load_csv('X:/Inhibitor_DUBs/2023-12-04_USP48_MonoUb_InhibNem_17e100uM.txt', '\t')
+df = load_csv(input("Give file name and directory: "), '\t')
 time_conversion(df)
-
-#rename_columns(df)
-
-
+rename_columns(df)
 
 figure = df.plot(kind="line",x = "Time",title="Test", fontsize = 10,
                  xticks=(0,30,60,90,120), figsize = (10,6), 
                  xlim = (0,120), xlabel = "Time / min",
                  ylabel = "Fluoresence / RFUs")
 plt.show()
+
+plt.savefig('Test_Fig.png')
 
 
 
